@@ -1,0 +1,12 @@
+{
+  "name": "browser-extensions",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "dev:hn-jump": "bun --filter hn-jump dev",
+    "dev:redirector": "bun --filter redirector dev",
+    "build:hn-jump": "bun --filter hn-jump build",
+    "build:redirector": "bun --filter redirector build",
+    "build": "bun --filter '*' build"
+  }
+}

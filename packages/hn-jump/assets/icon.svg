@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Orange rounded square background -->
+  <rect x="4" y="4" width="120" height="120" rx="20" ry="20" fill="#FF6600"/>
+
+  <!-- White "Y" letter - HN style -->
+  <text x="64" y="92" font-family="Helvetica, Arial, sans-serif" font-weight="bold"
+        font-size="90" fill="white" text-anchor="middle" dominant-baseline="auto">Y</text>
+
+  <!-- Small jump arrow badge (bottom-right) -->
+  <circle cx="102" cy="102" r="22" fill="#FFFFFF"/>
+  <path d="M93 108 L102 95 L111 108" stroke="#FF6600" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <line x1="102" y1="96" x2="102" y2="113" stroke="#FF6600" stroke-width="5" stroke-linecap="round"/>
+</svg>
