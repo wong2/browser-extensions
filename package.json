@@ -5,8 +5,10 @@
   "scripts": {
     "dev:hn-jump": "bun --filter hn-jump dev",
     "dev:redirector": "bun --filter redirector dev",
+    "dev:crt": "bun --filter crt dev",
     "build:hn-jump": "bun --filter hn-jump build",
     "build:redirector": "bun --filter redirector build",
+    "build:crt": "bun --filter crt build",
     "build": "bun --filter '*' build"
   }
 }
