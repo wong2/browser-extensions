@@ -6,9 +6,11 @@
     "dev:hn-jump": "bun --filter hn-jump dev",
     "dev:redirector": "bun --filter redirector dev",
     "dev:crt": "bun --filter crt dev",
+    "dev:webmcp-radar": "bun --filter webmcp-radar dev",
     "build:hn-jump": "bun --filter hn-jump build",
     "build:redirector": "bun --filter redirector build",
     "build:crt": "bun --filter crt build",
+    "build:webmcp-radar": "bun --filter webmcp-radar build",
     "build": "bun --filter '*' build"
   }
 }

@@ -19,6 +19,7 @@ web-ext.config.ts
 !.vscode/extensions.json
 .idea
 .DS_Store
+.impeccable
 *.suo
 *.ntvs*
 *.njsproj

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Detection History · WebMCP Radar</title>
+  </head>
+  <body>
+    <!--
+      THESIS: A chronological protocol ledger, not an analytics dashboard; every ruled row is a page where at least one WebMCP tool was directly observed.
+      OWN-WORLD: White paper, graphite rules, and black-and-white signals; compact native text with monospace reserved for URLs and counts.
+      STORY: Review detected pages, filter the ledger, then reopen or delete individual records or clear the local history.
+      FIRST VIEWPORT: A max-1040 desktop masthead, privacy note with actions, search-and-count toolbar, and ruled recent rows immediately below.
+      FORM: Code-led direct Operate extension of the established Live Protocol Ledger; key history-ledger-webmcp-v1.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+    -->
+    <div id="app" aria-busy="true">
+      <main class="history-shell">
+        <header class="masthead">
+          <div class="masthead-copy">
+            <h1>WebMCP history</h1>
+            <p>WebMCP pages you’ve encountered while browsing.</p>
+          </div>
+        </header>
+        <section class="ledger-region" aria-label="Detected WebMCP pages">
+          <div class="loading-ledger" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </section>
+        <footer class="history-footer">
+          <p class="data-note">Data stays on this device.</p>
+        </footer>
+      </main>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>WebMCP Radar</title>
+  </head>
+  <body>
+    <!--
+      THESIS: A live protocol readout, not a miniature dashboard; status and tool inventory share one continuous instrument surface.
+      OWN-WORLD: White paper, graphite rules, and black-and-white signals; compact native typography with monospace reserved for tool identifiers and schemas.
+      STORY: Confirm page support at a glance, read the exact count, then disclose only the tool metadata needed for inspection.
+      FIRST VIEWPORT: A narrow masthead, one horizontal signal rail, and the first tool rows visible without scrolling; refresh stays in the top-right reach zone.
+      FORM: Code-led direct Operate surface for a precisely specified browser popup; key direct-operate-webmcp-v1.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+    -->
+    <div id="app" aria-busy="true">
+      <main class="popup-shell">
+        <header class="masthead">
+          <div class="brand-lockup">
+            <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+              <rect width="32" height="32" rx="9" fill="currentColor" />
+              <path class="radar-stroke" d="M16 7.5A8.5 8.5 0 1 0 24.5 16" />
+              <path class="radar-stroke" d="M16 16 22 10" />
+              <polygon class="radar-fill" points="11,12 14,12 14,15 11,15" />
+            </svg>
+            <div class="brand-copy">
+              <h1>WebMCP Radar</h1>
+              <p>Reading the current page…</p>
+            </div>
+          </div>
+          <button class="icon-button" type="button" disabled aria-label="Refresh tools">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M16 6.5V3m0 0h-3.5M16 3l-2.4 2.4A6 6 0 1 0 15.4 12" />
+            </svg>
+          </button>
+        </header>
+        <section class="signal-panel signal-panel--loading" role="status" aria-live="polite" aria-atomic="true">
+          <span class="signal-dot" aria-hidden="true"></span>
+          <div class="signal-message">
+            <strong>Scanning…</strong>
+          </div>
+          <div class="signal-count" aria-hidden="true" hidden>
+            <span>—</span>
+            <small>tools</small>
+          </div>
+        </section>
+        <div class="loading-lines" aria-hidden="true">
+          <span></span><span></span>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

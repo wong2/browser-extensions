@@ -29,6 +29,14 @@
         "wxt": "^0.20.18",
       },
     },
+    "packages/webmcp-radar": {
+      "name": "webmcp-radar",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "^5.9.3",
+        "wxt": "^0.20.18",
+      },
+    },
   },
   "packages": {
     "@1natsu/wait-element": ["@1natsu/wait-element@4.2.0", "", { "dependencies": { "defu": "^6.1.4", "many-keys-map": "^3.0.0" } }, "sha512-Om0Q+WE9mNrpY4AwMTvkFiYHv8VM7TML3PvOqXy+w6kAjLjKhGYHYX+305+a6J8RVpds9s7IF2Z5aOPYwULFNw=="],
@@ -730,6 +738,8 @@
     "watchpack": ["watchpack@2.4.4", "", { "dependencies": { "glob-to-regexp": "^0.4.1", "graceful-fs": "^4.1.2" } }, "sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA=="],
 
     "web-ext-run": ["web-ext-run@0.2.4", "", { "dependencies": { "@babel/runtime": "7.28.2", "@devicefarmer/adbkit": "3.3.8", "chrome-launcher": "1.2.0", "debounce": "1.2.1", "es6-error": "4.1.1", "firefox-profile": "4.7.0", "fx-runner": "1.4.0", "multimatch": "6.0.0", "node-notifier": "10.0.1", "parse-json": "7.1.1", "pino": "9.7.0", "promise-toolbox": "0.21.0", "set-value": "4.1.0", "source-map-support": "0.5.21", "strip-bom": "5.0.0", "strip-json-comments": "5.0.2", "tmp": "0.2.5", "update-notifier": "7.3.1", "watchpack": "2.4.4", "zip-dir": "2.0.0" } }, "sha512-rQicL7OwuqWdQWI33JkSXKcp7cuv1mJG8u3jRQwx/8aDsmhbTHs9ZRmNYOL+LX0wX8edIEQX8jj4bB60GoXtKA=="],
+
+    "webmcp-radar": ["webmcp-radar@workspace:packages/webmcp-radar"],
 
     "webpack-virtual-modules": ["webpack-virtual-modules@0.6.2", "", {}, "sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ=="],
 
