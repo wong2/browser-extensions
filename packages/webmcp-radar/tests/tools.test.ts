@@ -10,12 +10,12 @@ import { classifyToolError, normalizeTools } from '@/utils/tools';
 
 describe('formatBadgeCount', () => {
   const cases: Array<[number, string]> = [
-    [0, '0'],
+    [0, ''],
     [1, '1'],
     [999, '999'],
     [1000, '999+'],
-    [-3, '0'],
-    [Number.NaN, '0'],
+    [-3, ''],
+    [Number.NaN, ''],
   ];
 
   for (const [count, expected] of cases) {

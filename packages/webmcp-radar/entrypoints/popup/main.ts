@@ -283,17 +283,18 @@ function renderTool(tool: ToolInfo): HTMLElement {
     identity.append(description);
   }
 
-  const badges = document.createElement('span');
-  badges.className = 'tool-badges';
-  if (tool.annotations?.readOnlyHint) badges.append(createBadge('read only', 'read'));
-  if (tool.annotations?.untrustedContentHint) badges.append(createBadge('untrusted', 'untrusted'));
-  summary.append(identity, badges);
+  summary.append(identity);
 
   const body = document.createElement('div');
   body.className = 'tool-body';
   const metadata = document.createElement('dl');
   metadata.className = 'metadata';
   metadata.append(metadataRow('Origin', tool.origin, true));
+  const hints = [
+    tool.annotations?.readOnlyHint ? 'Read only' : '',
+    tool.annotations?.untrustedContentHint ? 'Untrusted content' : '',
+  ].filter(Boolean);
+  if (hints.length > 0) metadata.append(metadataRow('Hints', hints.join(' · ')));
 
   const schemaText = formatSchema(tool.inputSchema);
   schemaByToolKey.set(tool.key, schemaText);
@@ -320,13 +321,6 @@ function renderTool(tool: ToolInfo): HTMLElement {
   details.append(summary, body);
   listItem.append(details);
   return listItem;
-}
-
-function createBadge(text: string, kind?: 'read' | 'untrusted'): HTMLElement {
-  const badge = document.createElement('span');
-  badge.className = `hint-badge${kind ? ` hint-badge--${kind}` : ''}`;
-  badge.textContent = text;
-  return badge;
 }
 
 function metadataRow(label: string, value: string, code = false): HTMLElement {

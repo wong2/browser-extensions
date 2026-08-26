@@ -363,9 +363,7 @@ h1 {
 
 .tool-row summary {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
+  display: block;
   min-height: 56px;
   padding: 10px 40px 10px 14px;
   cursor: pointer;
@@ -443,41 +441,6 @@ h1 {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   unicode-bidi: plaintext;
-}
-
-.tool-badges {
-  display: flex;
-  max-width: 146px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-end;
-  gap: 5px;
-}
-
-.hint-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 20px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--code-bg);
-  color: var(--muted);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.hint-badge--read {
-  background: var(--signal-soft);
-  color: var(--signal-deep);
-}
-
-.hint-badge--untrusted {
-  background: var(--warning-soft);
-  border: 1px dashed var(--warning);
-  color: var(--warning-ink);
 }
 
 .tool-body {
@@ -699,8 +662,7 @@ h1 {
   }
 
   .signal-panel--warning .signal-message span,
-  .signal-panel--warning .signal-count,
-  .hint-badge--untrusted {
+  .signal-panel--warning .signal-count {
     color: var(--warning-ink);
   }
 

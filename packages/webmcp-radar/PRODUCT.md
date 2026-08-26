@@ -16,9 +16,9 @@ People inspecting the page they are currently browsing, especially web developer
 
 ## Product Purpose
 
-Detect whether the active page exposes the WebMCP API, keep the toolbar badge synchronized with the number of tools the page makes accessible, show registered tool metadata in a compact popup, and retain a local history of page titles and URLs where tools were detected for later reference.
+Detect whether the active page exposes the WebMCP API, show a synchronized toolbar badge when the page makes one or more tools accessible, show registered tool metadata in a compact popup, and retain a local history of page titles and URLs where tools were detected for later reference.
 
-Success means the badge and popup agree after navigation and dynamic tool registration or removal, while clearly distinguishing an unavailable API from a supported page with zero tools. Every URL exposing at least one accessible tool should also become findable by title or URL in history without retaining tool schemas or sending browsing data elsewhere; zero-tool pages stay out of history.
+Success means every positive badge count agrees with the popup after navigation and dynamic tool registration or removal, while a supported page with zero tools has no badge and remains distinct from an unavailable API. Every URL exposing at least one accessible tool should also become findable by title or URL in history without retaining tool schemas or sending browsing data elsewhere; zero-tool pages stay out of history.
 
 ## Positioning
 
@@ -51,7 +51,7 @@ No product analytics, customer claims, or external service dependencies are supp
 ## Product Principles
 
 - Make support state unambiguous: unavailable, blocked, supported with zero tools, and supported with tools are different outcomes.
-- Keep the badge live and make the popup refresh from the page instead of trusting stale worker memory.
+- Keep positive badge counts live, clear the badge at zero, and make the popup refresh from the page instead of trusting stale worker memory.
 - Make history useful without turning it into analytics: newest-first titles and URLs, counts, search, reopen, and deletion are enough.
 - Preserve page safety by inspecting serializable metadata only and never executing tools.
 - Favor dense, readable technical detail over decorative dashboard chrome.

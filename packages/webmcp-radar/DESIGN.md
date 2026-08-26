@@ -95,11 +95,6 @@ components:
     backgroundColor: "{colors.surface-strong}"
     textColor: "{colors.ink}"
     padding: "10px 40px 10px 14px"
-  hint-badge:
-    backgroundColor: "{colors.code-bg}"
-    textColor: "{colors.muted}"
-    rounded: "{rounded.pill}"
-    padding: "2px 7px"
   schema-code:
     backgroundColor: "{colors.code-bg}"
     textColor: "{colors.ink}"
@@ -185,7 +180,7 @@ The light palette is white paper and graphite; the dark palette inverts those sa
 ### Semantic States
 
 - **Warning Graphite**: marks policy and origin-isolation warnings; its diamond status mark separates it from other states.
-- **Warning Gray**: is the warning-state field and untrusted-content badge backing.
+- **Warning Gray**: is the warning-state field backing.
 - **Destructive Black**: marks unavailable scan outcomes and explicit destructive controls; the error status mark is square.
 - **Destructive Gray**: is the error-state field and the hover wash for row deletion.
 
@@ -232,7 +227,7 @@ The light palette is white paper and graphite; the dark palette inverts those sa
 
 The popup is a fixed-width (420px; minimum 360px) vertical instrument with a 600px maximum height. A 56px masthead, 56px signal rail, scrollable inventory, and 32px footer form one uninterrupted stack. The first viewport prioritizes current-page context, support state and count, then immediately visible tool rows.
 
-The recurring popup inset is 14px. Compact 10px row padding, 10px grid gaps, and 1px graphite dividers produce the dense ledger rhythm. Tool summaries use two columns—identity and semantic risk badges—with a reserved right-side disclosure affordance; disclosed content keeps the same inset and stacks origin before schema. Long URLs, names, and descriptions clamp, truncate, or wrap deliberately rather than widening the popup.
+The recurring popup inset is 14px. Compact 10px row padding and 1px graphite dividers produce the dense ledger rhythm. Tool summaries give their full width to identity and description, with only the right-side disclosure affordance reserved; disclosed content keeps the same inset and stacks origin and optional hints before schema. Long URLs, names, and descriptions clamp, truncate, or wrap deliberately rather than widening the popup.
 
 The popup has no viewport-width breakpoints: its constrained geometry is the responsive contract. System color preference changes semantic token values, and reduced-motion preference removes animation and disclosure transitions.
 
@@ -284,14 +279,14 @@ The masthead establishes the current-page context without becoming app chrome. A
 ### Tool Row Disclosure
 
 - **Shape:** a ruled row with a minimum 56px summary and a small CSS-drawn chevron at the right.
-- **Default:** Strong Paper, monospace tool name, muted title and optional description, plus only semantically important read-only or untrusted badges.
+- **Default:** Strong Paper, monospace tool name, muted title and optional description. The summary carries no annotation badges.
 - **Hover / Focus:** the summary receives a translucent Soft Gray wash; focus uses the shared visible outline.
-- **Open:** the row changes to Paper and the chevron rotates; metadata appears before the schema rather than opening a separate dialog.
+- **Open:** the row changes to Paper and the chevron rotates; origin and optional tool hints appear before the schema rather than opening a separate dialog.
 
-### Hint Badges
+### Tool Hints Metadata
 
-- **Style:** uppercase 10.5px labels with 2px × 7px padding and fully pill-shaped corners.
-- **Variants:** default uses Code Paper; read-only uses Soft Gray with Deep Black text; untrusted uses Warning Gray, warning text, and a dashed border.
+- **Placement:** annotation hints appear only inside an expanded tool row, never in the collapsed inventory.
+- **Style:** one ordinary metadata value—such as “Read only · Untrusted content”—without warning color, border, or badge styling. Omit the row when no true hint is present.
 
 ### Schema Code Block
 

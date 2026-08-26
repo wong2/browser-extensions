@@ -1,10 +1,10 @@
 # WebMCP Radar
 
-A focused browser extension that detects WebMCP on the active page, shows the number of accessible tools on the toolbar badge, exposes each tool's metadata in the popup, and keeps a local history of page titles and URLs where tools were detected.
+A focused browser extension that detects WebMCP on the active page, shows a toolbar badge when accessible tools are present, exposes each tool's metadata in the popup, and keeps a local history of page titles and URLs where tools were detected.
 
 ## What it shows
 
-- A live badge with the accessible tool count, including `0` when WebMCP is available but no tool is registered
+- A live badge with the accessible tool count when at least one tool is available; zero-tool pages leave the badge empty
 - Tool name, optional title, description, origin, annotations, and formatted input schema
 - Separate states for an unavailable API, a page blocked by WebMCP security policy, and a browser page that extensions cannot inspect
 - A direct WebMCP testing-flag shortcut when Chrome does not expose the API on the current page
@@ -15,7 +15,7 @@ The count follows `document.modelContext.getTools()` semantics. It includes tool
 
 ## History
 
-Whenever a page exposes at least one accessible WebMCP tool, the extension records its title, URL, origin, first and most recent detection times, and latest positive tool count. Supported pages with zero tools remain visible in the badge and popup but are not added to history. Fragments and embedded URL credentials are removed, records are deduplicated by URL, and the newest 200 entries are kept locally. Tool descriptions and schemas are never stored in history.
+Whenever a page exposes at least one accessible WebMCP tool, the extension records its title, URL, origin, first and most recent detection times, and latest positive tool count. Supported pages with zero tools remain visible in the popup but show no badge and are not added to history. Fragments and embedded URL credentials are removed, records are deduplicated by URL, and the newest 200 entries are kept locally. Tool descriptions and schemas are never stored in history.
 
 Open **History** from the popup to search, reopen, remove, or clear recorded pages.
 
