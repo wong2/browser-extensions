@@ -29,8 +29,9 @@ app.innerHTML = `
         </div>
       </div>
       <button class="icon-button" id="refresh" type="button" aria-label="Refresh tools" title="Refresh tools">
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <path d="M16 6.5V3m0 0h-3.5M16 3l-2.4 2.4A6 6 0 1 0 15.4 12"></path>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"></path>
+          <path d="M21 3v5h-5"></path>
         </svg>
       </button>
     </header>
