@@ -117,9 +117,28 @@ p {
   display: flex;
   min-height: 68px;
   align-items: center;
+  gap: 10px;
   padding: 11px 24px;
   border-bottom: 1px solid var(--rule);
   background: var(--surface-strong);
+}
+
+.history-mark {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  color: var(--signal);
+}
+
+.history-mark .radar-stroke {
+  fill: none;
+  stroke: var(--button-ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.history-mark .radar-fill {
+  fill: var(--button-ink);
 }
 
 .masthead-copy {
@@ -249,6 +268,11 @@ p {
   stroke-width: 1.55;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: stroke 140ms ease-out;
+}
+
+.search-control:focus-within > svg {
+  stroke: var(--signal);
 }
 
 .search-control input {
@@ -303,7 +327,7 @@ p {
 
 .record-count {
   flex: none;
-  color: var(--muted);
+  color: var(--signal-deep);
   font-size: 11px;
   font-weight: 650;
   font-variant-numeric: tabular-nums;

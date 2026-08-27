@@ -158,7 +158,7 @@ WebMCP Radar is a live protocol readout, not a miniature dashboard. White paper 
 
 The popup is code-led Direct Operate. It favors compact native typography, tabular count treatment, and monospace only where an identifier or JSON schema benefits from it. The result is dense enough for inspection while remaining quiet around routine and empty states; it never implies that the extension executes a discovered tool.
 
-The history page carries that instrument into a chronological field log of titles and URLs where at least one tool was detected: newest-first records, search, reopening, and local deletion remain visibly operational rather than analytical. A quiet footer keeps the local-data note and clear action out of the primary reading flow, while each ruled row keeps page identity, compact detection metadata, and a coherent action group in one scan line.
+The history page carries that instrument into a chronological field log of titles and URLs where at least one tool was detected: the radar-green brand mark anchors the masthead, while newest-first records, search, reopening, and local deletion remain visibly operational rather than analytical. A quiet footer keeps the local-data note and clear action out of the primary reading flow, while each ruled row keeps page identity, compact detection metadata, and a coherent action group in one scan line.
 
 **Key Characteristics:**
 
@@ -232,7 +232,7 @@ The recurring popup inset is 14px. Compact 10px row padding and 1px graphite div
 
 The popup has no viewport-width breakpoints: its constrained geometry is the responsive contract. System color preference changes semantic token values, and reduced-motion preference removes animation and disclosure transitions.
 
-The history page is one centered continuous shell, capped at 1040px with graphite side rules and a full-viewport minimum height. Its first viewport reads in order: a 68px masthead with a browsing-context subtitle, a 58px search-and-count toolbar, then the newest ruled records. A compact data-and-clear footer follows the ledger. Rows use one stable two-column grid at every width: a fluid, directly linked page identity whose second line groups URL and tool count, plus a reserved right-side overflow control. Desktop rows are at least 72px tall with a 12px gap and 14px × 24px padding.
+The history page is one centered continuous shell, capped at 1040px with graphite side rules and a full-viewport minimum height. Its first viewport reads in order: a 68px masthead with the radar-green brand mark and a browsing-context subtitle, a 58px search-and-count toolbar, then the newest ruled records. A compact data-and-clear footer follows the ledger. Rows use one stable two-column grid at every width: a fluid, directly linked page identity whose second line groups URL and tool count, plus a reserved right-side overflow control. Desktop rows are at least 72px tall with a 12px gap and 14px × 24px padding.
 
 History responds at three implemented breakpoints without rearranging row semantics. At 780px, horizontal insets reduce to 18px. At 620px, shell side rules disappear and footer actions may wrap. At 410px, insets reduce to 14px and search/count stack; each row keeps the page identity and metadata on the left with only its overflow control reserved on the right, including at a 360px viewport.
 

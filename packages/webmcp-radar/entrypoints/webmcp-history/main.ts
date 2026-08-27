@@ -21,6 +21,12 @@ const app = requiredElement<HTMLDivElement>('#app');
 app.innerHTML = `
   <main class="history-shell">
     <header class="masthead">
+      <svg class="history-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="9" fill="currentColor"></rect>
+        <path class="radar-stroke" d="M16 7.5A8.5 8.5 0 1 0 24.5 16"></path>
+        <path class="radar-stroke" d="M16 16 22 10"></path>
+        <polygon class="radar-fill" points="11,12 14,12 14,15 11,15"></polygon>
+      </svg>
       <div class="masthead-copy">
         <h1>WebMCP history</h1>
         <p>WebMCP pages you’ve encountered while browsing.</p>
