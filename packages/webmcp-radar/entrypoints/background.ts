@@ -326,7 +326,7 @@ async function applyState(
   if (state.status === 'supported') {
     operations.push(browser.action.setBadgeBackgroundColor({
       tabId: state.tabId,
-      color: '#171717',
+      color: '#176b5b',
     }));
   }
 

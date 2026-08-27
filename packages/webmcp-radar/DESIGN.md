@@ -10,9 +10,9 @@ colors:
   faint: "#696969"
   rule: "#dddddd"
   rule-strong: "#898989"
-  signal: "#171717"
-  signal-deep: "#111111"
-  signal-soft: "#ededed"
+  signal: "#176b5b"
+  signal-deep: "#0f574a"
+  signal-soft: "#e7f2ef"
   warning: "#404040"
   warning-soft: "#e7e7e7"
   warning-ink: "#303030"
@@ -21,10 +21,10 @@ colors:
   danger-soft: "#dfdfdf"
   danger-ink: "#171717"
   danger-ink-dark: "#f0f0f0"
-  focus: "#000000"
+  focus: "#0b6757"
   code-bg: "#f0f0f0"
   code-ink: "#262626"
-  selection: "#d1d1d1"
+  selection: "#cce5df"
   button-ink: "#ffffff"
   scroll-thumb: "#737373"
 typography:
@@ -154,7 +154,7 @@ components:
 
 **Creative North Star: "The Live Protocol Ledger"**
 
-WebMCP Radar is a live protocol readout, not a miniature dashboard. White paper surfaces, graphite rules, and decisive black-and-white contrast turn a potentially abstract API state into a small, calm instrument: support first, count second, metadata only on disclosure.
+WebMCP Radar is a live protocol readout, not a miniature dashboard. White paper surfaces, graphite rules, and a restrained radar-green signal turn a potentially abstract API state into a small, calm instrument: support first, count second, metadata only on disclosure.
 
 The popup is code-led Direct Operate. It favors compact native typography, tabular count treatment, and monospace only where an identifier or JSON schema benefits from it. The result is dense enough for inspection while remaining quiet around routine and empty states; it never implies that the extension executes a discovered tool.
 
@@ -163,20 +163,20 @@ The history page carries that instrument into a chronological field log of title
 **Key Characteristics:**
 
 - A continuous instrument surface, divided by hairline graphite rules rather than dashboard cards.
-- Near-black carries live state and action; warnings and errors are distinguished by labels, fields, and shapes rather than hue.
+- Radar green carries live state, focus, and primary action; warnings and errors remain distinct through labels, fields, and shapes.
 - Technical detail is progressively disclosed: readable rows first, metadata and schema second.
 - History is a chronological, searchable ledger of URLs with detected tools; it never turns local detection records into analytics.
 - System light and dark schemes preserve the same semantic token roles.
 
 ## Colors
 
-The light palette is white paper and graphite; the dark palette inverts those same roles into black surfaces and white signals.
+The light palette is white paper and graphite with a low-saturation radar green; the dark palette keeps the same green role against charcoal surfaces.
 
-### Monochrome Core
+### Radar Accent
 
-- **Signal Black**: drives the light-scheme brand mark, live dot, badge, and primary action.
-- **Deep Black**: supplies compact action text and supporting status copy where the signal needs firmer contrast.
-- **Soft Gray**: is the supported-state field and the hover wash for quiet actions.
+- **Radar Green**: drives the brand mark, live dot, badge, focus ring, and primary action.
+- **Deep Radar**: supplies compact action text and supporting status copy where the signal needs firmer contrast.
+- **Signal Mist**: is the supported-state field and the hover wash for quiet actions.
 
 ### Semantic States
 
@@ -192,11 +192,11 @@ The light palette is white paper and graphite; the dark palette inverts those sa
 - **Graphite Ink**: carries primary reading text; **Muted**, **Faint**, and **Scroll Graphite** step down for supporting text and affordances.
 - **Graphite Rules** and **Strong Rules** establish boundaries without card-heavy depth.
 - **Code Paper** gives schemas, skeletons, and subtle hover fields a distinct technical plane.
-- **Focus Black**, **Selection Gray**, and **Inverse Ink** are functional colors for keyboard state, text selection, and filled actions; their dark-scheme roles invert.
+- **Radar Focus**, **Signal Selection**, and **Inverse Ink** are functional colors for keyboard state, text selection, and filled actions; their dark-scheme roles are composed separately.
 
 ### Named Rules
 
-**The Monochrome Signal Rule.** Black-and-white contrast communicates availability, liveness, and action. Do not introduce a decorative hue into the instrument surface.
+**The Radar Signal Rule.** Radar green communicates availability, liveness, focus, and primary action. Keep it rare enough to remain meaningful; do not tint neutral reading surfaces decoratively.
 
 **The Semantic Alert Rule.** Warning and error states must remain distinguishable without color: use explicit copy, separate background values, and diamond-versus-square marks. Destructive actions stay explicit in their wording and confirmation.
 
@@ -262,13 +262,13 @@ The masthead establishes the current-page context without becoming app chrome. A
 
 - **Purpose:** the popup's single entry point to the local WebMCP page history; no duplicate footer navigation.
 - **Shape:** compact 30px-high text control with 6px corners and a restrained horizontal inset.
-- **Default:** transparent field with muted text so current-page status remains primary.
-- **Hover / Focus:** Code Paper hover with Ink text; the global 2px focus outline uses Focus Black in light mode and white in dark mode.
+- **Default:** transparent field with Deep Radar text so history is easy to find without competing with the status rail.
+- **Hover / Focus:** Code Paper hover with Ink text; the global 2px focus outline uses Radar Focus in both schemes.
 
 ### Signal Rail
 
 - **Structure:** 7px status dot and concise state message lead the rail. A compact 16px tabular count and uppercase unit appear only after WebMCP support is confirmed; loading, unavailable, blocked, restricted, and error states omit the count region entirely. Supporting text appears only when same-origin fallback needs disclosure.
-- **Supported:** Soft Gray field with a circular Signal Black dot and Deep Black copy; dark mode inverts the signal roles.
+- **Supported:** Signal Mist field with a circular Radar Green dot and Deep Radar copy; dark mode uses a brighter radar green against a deep green field.
 - **Loading / empty:** Code Paper or Paper with graphite copy; loading alone breathes the dot.
 - **Warning / error:** separate gray fields with diamond and square status marks respectively. These states remove the live-dot shadow.
 
@@ -281,7 +281,7 @@ The masthead establishes the current-page context without becoming app chrome. A
 
 - **Shape:** a ruled row with a minimum 56px summary and a small CSS-drawn chevron at the right.
 - **Default:** Strong Paper, monospace tool name, muted title and optional description. The summary carries no annotation badges.
-- **Hover / Focus:** the summary receives a translucent Soft Gray wash; focus uses the shared visible outline.
+- **Hover / Focus:** the summary receives a translucent Signal Mist wash; focus uses the shared visible outline.
 - **Open:** the row changes to Paper and the chevron rotates; origin and optional tool hints appear before the schema rather than opening a separate dialog.
 
 ### Tool Hints Metadata
@@ -299,13 +299,13 @@ The masthead establishes the current-page context without becoming app chrome. A
 ### Primary Action
 
 - **Shape:** 7px corners, 30px minimum height, and 5px × 10px padding.
-- **Primary:** Signal Black background with Inverse Ink text, used for the single most useful recovery—Scan again when retry is meaningful, or Enable WebMCP flag when the API is absent. Dark mode reverses the pair.
-- **Hover / Focus:** Deep Black on hover; the shared high-contrast focus outline remains keyboard-visible.
+- **Primary:** Radar Green background with Inverse Ink text, used for the single most useful recovery—Scan again when retry is meaningful, or Enable WebMCP flag when the API is absent. Dark mode uses the brighter signal value with dark inverse text.
+- **Hover / Focus:** Deep Radar on hover; the shared high-contrast focus outline remains keyboard-visible.
 
 ### Text Link
 
 - **Style:** a compact 26px-tall quiet action for WebMCP docs, Setup guide, and Copy JSON.
-- **Hover / Focus:** transparent at rest, then Soft Gray backing; it keeps text-action scale rather than becoming a secondary filled button.
+- **Hover / Focus:** transparent at rest, then Signal Mist backing; it keeps text-action scale rather than becoming a secondary filled button.
 
 ### History Masthead and Data Footer
 
