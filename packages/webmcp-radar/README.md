@@ -8,7 +8,7 @@ A focused browser extension that detects WebMCP on the active page, shows a tool
 - Tool name, optional title, description, origin, annotations, and formatted input schema
 - Separate states for an unavailable API, a page blocked by WebMCP security policy, and a browser page that extensions cannot inspect
 - A direct WebMCP testing-flag shortcut when Chrome does not expose the API on the current page
-- Dynamic updates after `toolchange`, navigation, tab activation, and a manual refresh
+- Dynamic updates after `toolchange`, navigation, and tab activation
 - A searchable history of the most recently detected WebMCP page titles and URLs, available from the popup
 
 The count follows `document.modelContext.getTools()` semantics. It includes tools accessible to the top-level page from eligible descendant frames; it does not execute any tool.

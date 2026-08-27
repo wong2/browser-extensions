@@ -81,11 +81,12 @@ components:
     textColor: "{colors.ink}"
     height: "56px"
     padding: "10px 14px"
-  icon-button:
+  masthead-link:
     backgroundColor: "transparent"
     textColor: "{colors.muted}"
-    rounded: "{rounded.control}"
-    size: "30px"
+    rounded: "{rounded.compact}"
+    padding: "4px 7px"
+    height: "30px"
   signal-panel-supported:
     backgroundColor: "{colors.signal-soft}"
     textColor: "{colors.signal-deep}"
@@ -225,7 +226,7 @@ The light palette is white paper and graphite; the dark palette inverts those sa
 
 ## Layout
 
-The popup is a fixed-width (420px; minimum 360px) vertical instrument with a 600px maximum height. A 56px masthead, 56px signal rail, scrollable inventory, and 32px footer form one uninterrupted stack. The first viewport prioritizes current-page context, support state and count, then immediately visible tool rows.
+The popup is a fixed-width (420px; minimum 360px) vertical instrument with a 600px maximum height. A 56px masthead, 56px signal rail, and scrollable inventory form one uninterrupted stack. The first viewport prioritizes current-page context, support state and count, then immediately visible tool rows.
 
 The recurring popup inset is 14px. Compact 10px row padding and 1px graphite dividers produce the dense ledger rhythm. Tool summaries give their full width to identity and description, with only the right-side disclosure affordance reserved; disclosed content keeps the same inset and stacks origin and optional hints before schema. Long URLs, names, and descriptions clamp, truncate, or wrap deliberately rather than widening the popup.
 
@@ -255,14 +256,14 @@ Geometry is compact and gently practical. Warning and error status marks use a 1
 
 ### Masthead Navigation
 
-The masthead establishes the current-page context without becoming app chrome. A 28px near-black brand mark in light mode (white in dark mode), 13.5px title, truncated 11px page label, and a top-right 30px refresh control sit on Strong Paper, divided from the signal rail by one graphite rule.
+The masthead establishes the current-page context without becoming app chrome. A 28px near-black brand mark in light mode (white in dark mode), 13.5px title, truncated 11px page label, and a top-right History link sit on Strong Paper, divided from the signal rail by one graphite rule.
 
-### Refresh Icon Button
+### Masthead History Link
 
-- **Shape:** compact rounded-square control (9px; 30px square).
-- **Default:** transparent field with muted iconography.
-- **Hover / Focus:** Code Paper hover with ink icon; the global 2px focus outline uses Focus Black in light mode and white in dark mode. The glyph spins once while a scan is in progress.
-- **Disabled:** faint, 58% opacity, and no pointer affordance.
+- **Purpose:** the popup's single entry point to the local WebMCP page history; no duplicate footer navigation.
+- **Shape:** compact 30px-high text control with 6px corners and a restrained horizontal inset.
+- **Default:** transparent field with muted text so current-page status remains primary.
+- **Hover / Focus:** Code Paper hover with Ink text; the global 2px focus outline uses Focus Black in light mode and white in dark mode.
 
 ### Signal Rail
 

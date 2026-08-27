@@ -28,12 +28,7 @@ app.innerHTML = `
           <p id="page-label">Current page</p>
         </div>
       </div>
-      <button class="icon-button" id="refresh" type="button" aria-label="Refresh tools" title="Refresh tools">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"></path>
-          <path d="M21 3v5h-5"></path>
-        </svg>
-      </button>
+      <button class="masthead-link" type="button" data-action="history">History</button>
     </header>
     <section class="signal-panel signal-panel--loading" id="signal" role="status" aria-live="polite" aria-atomic="true">
       <span class="signal-dot" aria-hidden="true"></span>
@@ -49,14 +44,10 @@ app.innerHTML = `
     <section class="tool-viewport" id="content" aria-label="WebMCP tool inventory">
       <div class="loading-lines" aria-hidden="true"><span></span><span></span></div>
     </section>
-    <footer class="popup-footer">
-      <button class="text-link" type="button" data-action="history">History</button>
-    </footer>
   </main>
 `;
 
 const pageLabel = requiredElement<HTMLElement>('#page-label');
-const refreshButton = requiredElement<HTMLButtonElement>('#refresh');
 const signal = requiredElement<HTMLElement>('#signal');
 const signalTitle = requiredElement<HTMLElement>('#signal-title');
 const signalDetail = requiredElement<HTMLElement>('#signal-detail');
@@ -68,8 +59,6 @@ const content = requiredElement<HTMLElement>('#content');
 let activeTabId: number | undefined;
 let scanSequence = 0;
 const schemaByToolKey = new Map<string, string>();
-
-refreshButton.addEventListener('click', () => void refresh());
 
 app.addEventListener('click', (event) => {
   const target = event.target as HTMLElement;
@@ -146,16 +135,12 @@ async function refresh(): Promise<void> {
 
 function renderLoading(): void {
   app.setAttribute('aria-busy', 'true');
-  refreshButton.disabled = true;
-  refreshButton.classList.add('is-refreshing');
   setSignal('loading', 'Scanning…', '', null);
   content.replaceChildren(createLoadingLines());
 }
 
 function renderState(state: TabScanState): void {
   app.setAttribute('aria-busy', 'false');
-  refreshButton.disabled = false;
-  refreshButton.classList.remove('is-refreshing');
   pageLabel.textContent = compactPageUrl(state.pageUrl);
   schemaByToolKey.clear();
 
@@ -243,8 +228,6 @@ function renderRestricted(state: Extract<TabScanState, { status: 'restricted' }>
 
 function renderStandaloneFailure(message: string): void {
   app.setAttribute('aria-busy', 'false');
-  refreshButton.disabled = false;
-  refreshButton.classList.remove('is-refreshing');
   setSignal('error', 'Radar unavailable', '', null);
   renderMessage({
     description: message,
