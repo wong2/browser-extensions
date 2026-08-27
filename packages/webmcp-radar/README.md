@@ -10,6 +10,7 @@ A focused browser extension that detects WebMCP on the active page, shows a tool
 - A direct WebMCP testing-flag shortcut when Chrome does not expose the API on the current page
 - Dynamic updates after `toolchange`, navigation, and tab activation
 - A searchable history of the most recently detected WebMCP page titles and URLs, available from the popup
+- The OpenAI WebMCP showcase opens once after installation so the extension can be tested immediately
 
 The count follows `document.modelContext.getTools()` semantics. It includes tools accessible to the top-level page from eligible descendant frames; it does not execute any tool.
 
