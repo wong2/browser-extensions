@@ -40,10 +40,9 @@ For a production build, load `.output/chrome-mv3` instead.
 
 ## Permissions
 
-- `tabs` — track active tabs and clear stale state on navigation
 - `webNavigation` — collect descendant-frame origins for WebMCP's explicit cross-origin discovery option
 - `storage` — keep the local supported-page history
-- `<all_urls>` — run the passive detector on ordinary pages before the user opens the popup
+- `<all_urls>` — run the passive detector and read matching page URLs and titles before the user opens the popup
 
 No inspected metadata leaves the browser, and the extension never invokes a page tool.
 

@@ -7,7 +7,7 @@ export default defineConfig({
   manifest: {
     name: 'WebMCP Radar',
     description: 'Discover and inspect WebMCP tools as you browse',
-    permissions: ['tabs', 'webNavigation', 'storage'],
+    permissions: ['webNavigation', 'storage'],
     host_permissions: ['<all_urls>'],
     action: {},
   },
