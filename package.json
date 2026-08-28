@@ -3,10 +3,12 @@
   "private": true,
   "workspaces": ["packages/*"],
   "scripts": {
+    "dev:cf-cache-purge": "bun --filter cf-cache-purge dev",
     "dev:hn-jump": "bun --filter hn-jump dev",
     "dev:redirector": "bun --filter redirector dev",
     "dev:crt": "bun --filter crt dev",
     "dev:webmcp-radar": "bun --filter webmcp-radar dev",
+    "build:cf-cache-purge": "bun --filter cf-cache-purge build",
     "build:hn-jump": "bun --filter hn-jump build",
     "build:redirector": "bun --filter redirector build",
     "build:crt": "bun --filter crt build",
