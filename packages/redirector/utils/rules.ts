@@ -64,13 +64,15 @@ export function parseRules(text: string): RedirectRule[] {
   const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
   const rules: RedirectRule[] = [];
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  for (const [i, line] of lines.entries()) {
     const parts = line.split('=>').map((s) => s.trim());
     if (parts.length !== 2) continue;
 
-    const from = parseUrl(parts[0]);
-    const to = parseUrl(parts[1]);
+    const [fromText, toText] = parts;
+    if (fromText === undefined || toText === undefined) continue;
+
+    const from = parseUrl(fromText);
+    const to = parseUrl(toText);
 
     const hasWildcard = from.path.includes(':') && from.path.includes('*');
 
@@ -91,7 +93,7 @@ export function parseRules(text: string): RedirectRule[] {
 
 export function buildDNRRules(
   rules: RedirectRule[]
-): chrome.declarativeNetRequest.Rule[] {
+): Browser.declarativeNetRequest.Rule[] {
   return rules.map((rule) => {
     // When no fromScheme, capture it with (https?) as group 1, shifting path groups by 1
     const captureScheme = !rule.fromScheme;
@@ -123,7 +125,7 @@ export function buildDNRRules(
       id: rule.id,
       priority: 1,
       action: {
-        type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
+        type: browser.declarativeNetRequest.RuleActionType.REDIRECT,
         redirect: {
           regexSubstitution,
         },
@@ -131,10 +133,10 @@ export function buildDNRRules(
       condition: {
         regexFilter,
         resourceTypes: [
-          chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
+          browser.declarativeNetRequest.ResourceType.MAIN_FRAME,
         ],
       },
-    } as chrome.declarativeNetRequest.Rule;
+    } as Browser.declarativeNetRequest.Rule;
   });
 }
 

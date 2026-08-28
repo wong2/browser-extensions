@@ -23,7 +23,8 @@ const status = document.querySelector<HTMLSpanElement>('#status')!;
 
 // Load saved rules
 browser.storage.local.get(STORAGE_KEY).then((result) => {
-  textarea.value = result[STORAGE_KEY] || '';
+  const value = result[STORAGE_KEY];
+  textarea.value = typeof value === 'string' ? value : '';
 });
 
 saveBtn.addEventListener('click', async () => {
