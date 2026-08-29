@@ -34,7 +34,7 @@ The extension runs while the user browses normal web pages. The popup reports to
 - Re-reads the full list after `toolchange` events and when the popup opens.
 - Records page titles and HTTP(S) URLs locally only when at least one accessible tool is detected; zero-tool pages are excluded, and legacy zero-tool records are removed. History is deduplicated, bounded to 200 recent entries, searchable, and user-clearable.
 - Stores only page-level history metadata and the latest count, never tool schemas or descriptions.
-- Opens the OpenAI WebMCP showcase once after a fresh installation so users can reach a real detection result immediately; updates and extension reloads do not reopen it.
+- Opens the WebMCP directory once after a fresh installation so users can reach a real detection result immediately; updates and extension reloads do not reopen it.
 - WebMCP remains experimental. Local testing currently requires a compatible Chrome build with `chrome://flags/#enable-webmcp-testing` enabled, or an origin-trial-enabled page.
 - When that API is absent, the popup points users to the exact Chrome testing flag and notes that Chrome must be relaunched; supported-zero, blocked, and restricted states retain their own guidance.
 - Secure context, origin isolation, and the `tools` Permissions Policy can limit availability.

@@ -39,7 +39,7 @@
     },
     "packages/webmcp-radar": {
       "name": "webmcp-radar",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "devDependencies": {
         "typescript": "^7.0.2",
         "wxt": "^0.21.4",

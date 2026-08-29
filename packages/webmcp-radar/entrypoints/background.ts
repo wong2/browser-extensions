@@ -30,7 +30,7 @@ import {
   type NavigationPlan,
 } from '@/utils/navigation';
 
-const WEBMCP_SHOWCASE_URL = 'https://developers.openai.com/showcase?view=webmcp-apps';
+const WEBMCP_DIRECTORY_URL = 'https://mcpservers.org/webmcp?utm_source=radar';
 
 const generationByTab = new Map<number, number>();
 const scheduledScansByTab = new Map<number, {
@@ -41,7 +41,7 @@ const scheduledScansByTab = new Map<number, {
 export default defineBackground(() => {
   browser.runtime.onInstalled.addListener(({ reason }) => {
     if (reason !== 'install') return;
-    void browser.tabs.create({ url: WEBMCP_SHOWCASE_URL }).catch(() => undefined);
+    void browser.tabs.create({ url: WEBMCP_DIRECTORY_URL }).catch(() => undefined);
   });
 
   browser.runtime.onMessage.addListener((message, sender) => {
