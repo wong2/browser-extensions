@@ -1,6 +1,18 @@
 import { parseRules, buildDNRRules, STORAGE_KEY } from '@/utils/rules';
+import { redirectQueryNavigation } from '@/utils/navigation';
 
 export default defineBackground(() => {
+  const onNavigation = async (details: { tabId: number; frameId: number; url: string }) => {
+    try {
+      await redirectQueryNavigation(details);
+    } catch (error) {
+      console.warn('Redirector: query redirect failed', error);
+    }
+  };
+  browser.webNavigation.onBeforeNavigate.addListener(onNavigation);
+  // Fallback when the browser doesn't expose a pending URL before commit.
+  browser.webNavigation.onCommitted.addListener(onNavigation);
+
   // Click extension icon to open options page
   browser.action.onClicked.addListener(() => {
     browser.runtime.openOptionsPage();

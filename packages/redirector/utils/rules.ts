@@ -1,13 +1,24 @@
-export interface RedirectRule {
+interface RuleSource {
   id: number;
   fromScheme?: string;
   fromHost: string;
   fromPath: string;
+  isWildcard: boolean;
+}
+
+export interface UrlRedirectRule extends RuleSource {
+  type: 'url';
   toScheme?: string;
   toHost: string;
   toPath: string;
-  isWildcard: boolean;
 }
+
+export interface QueryRedirectRule extends RuleSource {
+  type: 'query';
+  queryParam: string;
+}
+
+export type RedirectRule = UrlRedirectRule | QueryRedirectRule;
 
 interface ParsedUrl {
   scheme?: string;
@@ -65,6 +76,7 @@ export function parseRules(text: string): RedirectRule[] {
   const rules: RedirectRule[] = [];
 
   for (const [i, line] of lines.entries()) {
+    if (line.startsWith('#')) continue;
     const parts = line.split('=>').map((s) => s.trim());
     if (parts.length !== 2) continue;
 
@@ -72,12 +84,27 @@ export function parseRules(text: string): RedirectRule[] {
     if (fromText === undefined || toText === undefined) continue;
 
     const from = parseUrl(fromText);
+    if (toText.startsWith('query:')) {
+      const queryParam = toText.slice('query:'.length);
+      if (!queryParam || /\s/.test(queryParam)) continue;
+      rules.push({
+        id: i + 1,
+        type: 'query',
+        fromScheme: from.scheme,
+        fromHost: from.host,
+        fromPath: from.path,
+        isWildcard: from.path.includes(':') && from.path.includes('*'),
+        queryParam,
+      });
+      continue;
+    }
     const to = parseUrl(toText);
 
     const hasWildcard = from.path.includes(':') && from.path.includes('*');
 
     rules.push({
       id: i + 1,
+      type: 'url',
       fromScheme: from.scheme,
       fromHost: from.host,
       fromPath: from.path,
@@ -94,7 +121,7 @@ export function parseRules(text: string): RedirectRule[] {
 export function buildDNRRules(
   rules: RedirectRule[]
 ): Browser.declarativeNetRequest.Rule[] {
-  return rules.map((rule) => {
+  return rules.filter((rule) => rule.type === 'url').map((rule) => {
     // When no fromScheme, capture it with (https?) as group 1, shifting path groups by 1
     const captureScheme = !rule.fromScheme;
     const groupOffset = captureScheme ? 1 : 0;
@@ -138,6 +165,42 @@ export function buildDNRRules(
       },
     } as Browser.declarativeNetRequest.Rule;
   });
+}
+
+/** Resolve one query redirect, decoding the parameter exactly once. */
+export function getQueryRedirectUrl(rawUrl: string, rules: RedirectRule[]): string | undefined {
+  let source: URL;
+  try {
+    source = new URL(rawUrl);
+  } catch {
+    return;
+  }
+  if (!['http:', 'https:'].includes(source.protocol)) return;
+
+  for (const rule of rules) {
+    if (rule.type !== 'query') continue;
+    if (rule.fromScheme && source.protocol !== `${rule.fromScheme}:`) continue;
+    if (source.host.toLowerCase() !== rule.fromHost.toLowerCase()) continue;
+
+    // Match only the pathname; parameter order and extra query values don't matter.
+    const pattern = rule.fromPath.split(/(:\w+\*?)/).map((part) => {
+      if (/^:\w+\*$/.test(part)) return '.+';
+      if (/^:\w+$/.test(part)) return '[^/]+';
+      return escapeRegex(part);
+    }).join('');
+    if (!new RegExp(`^${pattern}$`).test(source.pathname)) continue;
+
+    const value = source.searchParams.get(rule.queryParam);
+    if (!value) continue;
+    try {
+      const target = new URL(value);
+      if (!['http:', 'https:'].includes(target.protocol)) continue;
+      if (target.href === source.href) continue;
+      return target.href;
+    } catch {
+      // Missing, relative, or malformed destinations leave navigation unchanged.
+    }
+  }
 }
 
 function escapeRegex(str: string): string {

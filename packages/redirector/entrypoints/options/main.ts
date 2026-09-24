@@ -7,7 +7,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <p class="description">
       Enter redirect rules, one per line, using <code>=></code> to separate source and target.<br>
       Use <code>:name</code> to match a single path segment, and <code>:name*</code> for wildcard matching.<br>
-      Example: <code>npmjs.com/package/:slug* => npmx.dev/package/:slug*</code>
+      Example: <code>npmjs.com/package/:slug* => npmx.dev/package/:slug*</code><br>
+      To open a link stored in a query parameter: <code>l.meta.ai => query:u</code> (automatically URL-decoded).
     </p>
     <textarea id="rules" placeholder="https://npmjs.com/package/:slug => https://npmx.dev/package/:slug"></textarea>
     <div class="actions">
