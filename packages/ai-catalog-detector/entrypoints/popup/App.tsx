@@ -1,30 +1,22 @@
 import {
   AlertTriangle,
-  BookOpen,
-  Bot,
   Check,
-  CheckCircle2,
   ChevronRight,
   Clock3,
   Code2,
   Copy,
   ExternalLink,
-  FileBraces,
   Globe,
-  Library,
   LoaderCircle,
   Lock,
-  Puzzle,
   RefreshCw,
   SearchX,
-  Server,
-  ShieldAlert,
   WifiOff,
-  Wrench,
   type LucideIcon,
 } from 'lucide-react';
 import { Children, useEffect, useState, type ReactNode } from 'react';
 import { artifactLabel, identifierLabel } from '@/utils/catalog';
+import { clientConfig, preferredRemote, requiresAuth, transportLabel } from '@/utils/client-config';
 import {
   SERVER_CARD_MEDIA_TYPE,
   type CatalogEntry,
@@ -32,6 +24,7 @@ import {
   type RuntimeMessage,
   type ScanResult,
   type ScanStatus,
+  type ScanWarning,
   type ServerCard,
 } from '@/utils/types';
 import './App.css';
@@ -39,6 +32,11 @@ import './App.css';
 const SPEC_URL = 'https://github.com/modelcontextprotocol/experimental-ext-server-card';
 
 type CopyHandler = (value: string) => Promise<void>;
+
+interface CopyProps {
+  copiedValue?: string;
+  onCopy: CopyHandler;
+}
 
 function App() {
   const [result, setResult] = useState<ScanResult | undefined>();
@@ -50,10 +48,11 @@ function App() {
     void loadScan('catalog:get-current-scan');
   }, []);
 
+  const isFound = result?.status === 'found' || result?.status === 'found-with-warnings';
   const mcpEntries = result?.entries.filter((entry) => entry.type === SERVER_CARD_MEDIA_TYPE) ?? [];
   const otherEntries = result?.entries.filter((entry) => entry.type !== SERVER_CARD_MEDIA_TYPE) ?? [];
-  const usesUpgradedOrigin = Boolean(result?.pageOrigin && result.origin && result.pageOrigin !== result.origin);
   const siteHost = getHost(result?.origin ?? result?.pageUrl);
+  const copy = { copiedValue, onCopy: copyValue };
 
   async function loadScan(type: RuntimeMessage['type']) {
     setIsLoading(true);
@@ -75,31 +74,32 @@ function App() {
     window.setTimeout(() => setCopiedValue((current) => (current === value ? undefined : current)), 1400);
   }
 
+  const refreshTitle = result
+    ? `Refresh (${result.fromCache ? 'cached' : 'fetched'} at ${formatTime(result.fetchedAt)})`
+    : 'Refresh';
+
   return (
     <main className="app" aria-busy={isLoading}>
       <header className="topbar">
         <div className="brand">
-          <h1>AI Catalog</h1>
-          {siteHost || result?.host?.displayName ? (
+          <h1>{siteHost ?? 'AI Catalog'}</h1>
+          {result?.host?.displayName ? (
             <p className="site-line">
-              {siteHost ? <span className="site-host">{siteHost}</span> : null}
-              {result?.host?.displayName ? (
-                result.host.documentationUrl ? (
-                  <a href={result.host.documentationUrl} target="_blank" rel="noreferrer">
-                    {result.host.displayName}
-                  </a>
-                ) : (
-                  <span>{result.host.displayName}</span>
-                )
-              ) : null}
+              {result.host.documentationUrl ? (
+                <a href={result.host.documentationUrl} target="_blank" rel="noreferrer">
+                  {result.host.displayName}
+                </a>
+              ) : (
+                result.host.displayName
+              )}
             </p>
           ) : null}
         </div>
         <button
           className="icon-button"
           type="button"
-          aria-label="Refresh"
-          title="Refresh, bypassing the cache"
+          aria-label={refreshTitle}
+          title={refreshTitle}
           onClick={() => void loadScan('catalog:refresh-current-scan')}
           disabled={isLoading}
         >
@@ -115,11 +115,9 @@ function App() {
           </p>
         ) : null}
 
-        {result ? (
-          <StatusPanel result={result} copiedValue={copiedValue} onCopy={copyValue} />
-        ) : isLoading ? (
-          <LoadingState />
-        ) : null}
+        {!result && isLoading ? <LoadingState /> : null}
+
+        {result && (!isFound || !result.entries.length) ? <StatusPanel result={result} {...copy} /> : null}
 
         {mcpEntries.length ? (
           <EntryGroup title="MCP servers" count={mcpEntries.length}>
@@ -128,8 +126,7 @@ function App() {
                 key={`${entry.identifier ?? entry.sourceUrl ?? 'mcp'}-${index}`}
                 entry={entry}
                 defaultOpen={mcpEntries.length === 1}
-                copiedValue={copiedValue}
-                onCopy={copyValue}
+                {...copy}
               />
             ))}
           </EntryGroup>
@@ -138,40 +135,20 @@ function App() {
         {otherEntries.length ? (
           <EntryGroup title="Other artifacts" count={otherEntries.length}>
             {otherEntries.map((entry, index) => (
-              <OtherEntry
-                key={`${entry.identifier ?? entry.type}-${index}`}
-                entry={entry}
-                copiedValue={copiedValue}
-                onCopy={copyValue}
-              />
+              <OtherEntry key={`${entry.identifier ?? entry.type}-${index}`} entry={entry} {...copy} />
             ))}
           </EntryGroup>
         ) : null}
-      </div>
 
-      {result && result.status !== 'unsupported' ? (
-        <footer className="footer">
-          <span>
-            {result.fromCache ? 'Cached' : 'Fetched'} at {formatTime(result.fetchedAt)}
-          </span>
-          {usesUpgradedOrigin ? <span title={`The page is ${result.pageOrigin}`}>Checked over HTTPS</span> : null}
-        </footer>
-      ) : null}
+        {result && isFound ? <CatalogDetails result={result} {...copy} /> : null}
+      </div>
     </main>
   );
 }
 
-interface StatusPanelProps {
-  result: ScanResult;
-  copiedValue?: string;
-  onCopy: CopyHandler;
-}
-
-function StatusPanel({ result, copiedValue, onCopy }: StatusPanelProps) {
+function StatusPanel({ result, copiedValue, onCopy }: { result: ScanResult } & CopyProps) {
   const view = getStatusView(result);
   const isFound = result.status === 'found' || result.status === 'found-with-warnings';
-  const endpointHref = getHttpUrl(result.endpoint);
-  const endpointParts = splitUrl(result.endpoint);
   const detail =
     !isFound && result.errorMessage && result.errorMessage !== `HTTP ${result.httpStatus}` ? result.errorMessage : undefined;
 
@@ -187,26 +164,9 @@ function StatusPanel({ result, copiedValue, onCopy }: StatusPanelProps) {
         </div>
       </div>
 
-      {result.endpoint ? (
-        <div className="endpoint">
-          <code title={result.endpoint}>
-            {endpointParts ? (
-              <>
-                <span className="url-origin">{endpointParts.origin}</span>
-                {endpointParts.rest}
-              </>
-            ) : (
-              result.endpoint
-            )}
-          </code>
-          <CopyButton value={result.endpoint} label="catalog URL" copiedValue={copiedValue} onCopy={onCopy} />
-          {isFound && endpointHref ? <LinkButton href={endpointHref} label="Open catalog JSON" /> : null}
-        </div>
-      ) : null}
+      {!isFound && result.endpoint ? <EndpointRow endpoint={result.endpoint} copiedValue={copiedValue} onCopy={onCopy} /> : null}
 
       {detail ? <p className="status-detail">{detail}</p> : null}
-
-      {result.warnings.length ? <WarningList warnings={result.warnings} /> : null}
 
       {result.status === 'not-found' ? (
         <p className="status-hint">
@@ -220,33 +180,85 @@ function StatusPanel({ result, copiedValue, onCopy }: StatusPanelProps) {
   );
 }
 
+function EndpointRow({ endpoint, openable, copiedValue, onCopy }: { endpoint: string; openable?: boolean } & CopyProps) {
+  const parts = splitUrl(endpoint);
+  const href = getHttpUrl(endpoint);
+  return (
+    <div className="endpoint">
+      <code title={endpoint}>
+        {parts ? (
+          <>
+            <span className="url-origin">{parts.origin}</span>
+            {parts.rest}
+          </>
+        ) : (
+          endpoint
+        )}
+      </code>
+      <CopyButton value={endpoint} label="catalog URL" copiedValue={copiedValue} onCopy={onCopy} />
+      {openable && href ? <LinkButton href={href} label="Open catalog JSON" /> : null}
+    </div>
+  );
+}
+
+function CatalogDetails({ result, copiedValue, onCopy }: { result: ScanResult } & CopyProps) {
+  const usesUpgradedOrigin = Boolean(result.pageOrigin && result.origin && result.pageOrigin !== result.origin);
+  return (
+    <details className="disclosure catalog-details">
+      <DisclosureSummary label="Catalog details" warnings={result.warnings.length} />
+      <div className="disclosure-body">
+        {result.endpoint ? <EndpointRow endpoint={result.endpoint} openable copiedValue={copiedValue} onCopy={onCopy} /> : null}
+        <dl className="facts">
+          {result.specVersion ? <Fact label="Spec" value={result.specVersion} /> : null}
+          <Fact label={result.fromCache ? 'Cached' : 'Fetched'} value={formatTime(result.fetchedAt)} />
+          {usesUpgradedOrigin ? <Fact label="Origin" value={`Checked over HTTPS for ${result.pageOrigin}`} /> : null}
+        </dl>
+        {result.warnings.length ? <WarningList warnings={result.warnings} /> : null}
+      </div>
+    </details>
+  );
+}
+
+function TechnicalDetails({ warnings, children }: { warnings: ScanWarning[]; children: ReactNode }) {
+  return (
+    <details className="disclosure">
+      <DisclosureSummary label="Technical details" warnings={warnings.length} />
+      <div className="disclosure-body">
+        <dl className="facts">{children}</dl>
+        {warnings.length ? <WarningList warnings={warnings} /> : null}
+      </div>
+    </details>
+  );
+}
+
+function DisclosureSummary({ label, warnings }: { label: string; warnings: number }) {
+  return (
+    <summary>
+      <ChevronRight aria-hidden size={13} className="chevron" />
+      {label}
+      {warnings ? (
+        <span className="warning-count">
+          <AlertTriangle aria-hidden size={12} />
+          {pluralize(warnings, 'warning')}
+        </span>
+      ) : null}
+    </summary>
+  );
+}
+
 function LoadingState() {
   return (
-    <div className="loading" aria-label="Scanning for an AI Catalog">
-      <section className="status status-neutral">
-        <div className="status-head">
-          <span className="status-icon">
-            <LoaderCircle aria-hidden size={16} className="spin" />
-          </span>
-          <div>
-            <h2>Scanning</h2>
-            <p>Looking for an AI Catalog on this site.</p>
-          </div>
-        </div>
-      </section>
-      <div className="group">
-        <div className="skeleton skeleton-title" />
-        <div className="entry-list">
-          {[0, 1, 2].map((index) => (
-            <div className="skeleton-row" key={index}>
-              <div className="skeleton skeleton-avatar" />
-              <div className="skeleton-lines">
-                <div className="skeleton" />
-                <div className="skeleton" />
-              </div>
+    <div className="group" aria-label="Scanning for an AI Catalog">
+      <div className="skeleton skeleton-title" />
+      <div className="entry-list">
+        {[0, 1, 2].map((index) => (
+          <div className="skeleton-row" key={index}>
+            <div className="skeleton-lines">
+              <div className="skeleton" />
+              <div className="skeleton" />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -259,15 +271,13 @@ function EntryGroup({ title, count, children }: { title: string; count: number; 
         {title}
         <span className="count">{count}</span>
       </h2>
-      <ul className="entry-list">
-        {Children.map(children, (child) => <li>{child}</li>)}
-      </ul>
+      <ul className="entry-list">{Children.map(children, (child) => <li>{child}</li>)}</ul>
     </section>
   );
 }
 
 interface EntryShellProps {
-  avatar: ReactNode;
+  iconSrc?: string;
   title: string;
   meta: ReactNode;
   tone?: 'warning' | 'error';
@@ -275,11 +285,11 @@ interface EntryShellProps {
   children: ReactNode;
 }
 
-function EntryShell({ avatar, title, meta, tone, defaultOpen, children }: EntryShellProps) {
+function EntryShell({ iconSrc, title, meta, tone, defaultOpen, children }: EntryShellProps) {
   return (
     <details className="entry" open={defaultOpen}>
       <summary>
-        {avatar}
+        {iconSrc ? <ServerIcon src={iconSrc} /> : null}
         <span className="entry-text">
           <span className="entry-title">{title}</span>
           <span className={`entry-meta${tone === 'error' ? ' tone-error' : ''}`}>{meta}</span>
@@ -294,35 +304,32 @@ function EntryShell({ avatar, title, meta, tone, defaultOpen, children }: EntryS
   );
 }
 
-interface EntryProps {
-  entry: CatalogEntry;
-  copiedValue?: string;
-  onCopy: CopyHandler;
-}
-
-function ServerEntry({ entry, defaultOpen, copiedValue, onCopy }: EntryProps & { defaultOpen: boolean }) {
+function ServerEntry({ entry, defaultOpen, copiedValue, onCopy }: { entry: CatalogEntry; defaultOpen: boolean } & CopyProps) {
   const serverCard = entry.serverCard;
   const websiteHref = getHttpUrl(serverCard?.websiteUrl);
   const repositoryHref = getHttpUrl(serverCard?.repository?.url);
-  const iconSrc = serverCard ? getSafeIconSrc(serverCard) : undefined;
   const description = entry.description || serverCard?.description;
   const remotes = serverCard?.remotes ?? [];
+  const primary = preferredRemote(remotes);
+  const config = clientConfig(entry);
+  const configCopied = Boolean(config && copiedValue === config);
+  const protocols = [...new Set(remotes.flatMap((remote) => remote.supportedProtocolVersions ?? []))].sort().reverse();
   const title =
     entry.displayName || serverCard?.title || serverCard?.name || identifierLabel(entry.identifier) || 'Unnamed server';
-  const version = serverCard?.version || entry.version;
   const tone = entry.errorMessage ? 'error' : entry.warnings.length ? 'warning' : undefined;
 
   const meta = entry.errorMessage
     ? 'Server Card unavailable'
-    : joinMeta([
-        serverCard?.name && serverCard.name !== title ? serverCard.name : undefined,
-        version ? `v${version}` : undefined,
-        remotes.length ? pluralize(remotes.length, 'remote') : undefined,
-      ]) || entry.identifier || 'MCP Server';
+    : primary
+      ? joinMeta([
+          [...new Set(remotes.map((remote) => transportLabel(remote.type)))].join(' / '),
+          remotes.some(requiresAuth) ? 'Auth required' : undefined,
+        ])
+      : 'No remote endpoint';
 
   return (
     <EntryShell
-      avatar={<Avatar src={iconSrc} Icon={Server} />}
+      iconSrc={serverCard ? getSafeIconSrc(serverCard) : undefined}
       title={title}
       meta={meta}
       tone={tone}
@@ -332,27 +339,27 @@ function ServerEntry({ entry, defaultOpen, copiedValue, onCopy }: EntryProps & {
 
       {entry.errorMessage ? <p className="entry-error">{entry.errorMessage}</p> : null}
 
-      <dl className="facts">
-        {entry.identifier ? <Fact label="ID" value={<code>{entry.identifier}</code>} /> : null}
-        {serverCard ? <Fact label="Name" value={serverCard.name || <span className="missing">Missing</span>} /> : null}
-        {serverCard ? <Fact label="Version" value={serverCard.version || <span className="missing">Missing</span>} /> : null}
-        <Fact
-          label="Card"
-          value={
-            entry.sourceUrl ? (
-              <span className="copy-line">
-                <code>{entry.sourceUrl}</code>
-                <CopyButton value={entry.sourceUrl} label="Server Card URL" copiedValue={copiedValue} onCopy={onCopy} />
-              </span>
-            ) : (
-              'Inline in the AI Catalog'
-            )
-          }
-        />
-      </dl>
+      {remotes.length ? (
+        <ul className="remotes">
+          {remotes.map((remote, index) => (
+            <RemoteRow key={`${remote.type}-${remote.url}-${index}`} remote={remote} copiedValue={copiedValue} onCopy={onCopy} />
+          ))}
+        </ul>
+      ) : null}
 
-      {websiteHref || repositoryHref ? (
-        <div className="link-row">
+      {config || websiteHref || repositoryHref ? (
+        <div className="action-row">
+          {config ? (
+            <button
+              className={`primary-button${configCopied ? ' is-copied' : ''}`}
+              type="button"
+              title="Copy an mcpServers entry for Cursor, Claude Code and other MCP clients"
+              onClick={() => void onCopy(config)}
+            >
+              {configCopied ? <Check aria-hidden size={13} /> : <Copy aria-hidden size={13} />}
+              {configCopied ? 'Copied' : 'Copy config'}
+            </button>
+          ) : null}
           {websiteHref ? (
             <a className="text-link" href={websiteHref} target="_blank" rel="noreferrer">
               <Globe aria-hidden size={13} />
@@ -368,50 +375,61 @@ function ServerEntry({ entry, defaultOpen, copiedValue, onCopy }: EntryProps & {
         </div>
       ) : null}
 
-      {remotes.length ? (
-        <div className="remotes">
-          <h3>
-            Remotes <span className="count">{remotes.length}</span>
-          </h3>
-          <ul>
-            {remotes.map((remote, index) => (
-              <RemoteRow key={`${remote.type}-${remote.url}-${index}`} remote={remote} copiedValue={copiedValue} onCopy={onCopy} />
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      {entry.warnings.length ? <WarningList warnings={entry.warnings} /> : null}
+      <TechnicalDetails warnings={entry.warnings}>
+        {entry.identifier ? <Fact label="ID" value={<code>{entry.identifier}</code>} /> : null}
+        {serverCard ? <Fact label="Name" value={serverCard.name || <span className="missing">Missing</span>} /> : null}
+        {serverCard ? <Fact label="Version" value={serverCard.version || <span className="missing">Missing</span>} /> : null}
+        {protocols.length ? <Fact label="Protocol" value={protocols.join(', ')} /> : null}
+        <Fact
+          label="Card"
+          value={
+            entry.sourceUrl ? (
+              <span className="copy-line">
+                <code>{entry.sourceUrl}</code>
+                <CopyButton value={entry.sourceUrl} label="Server Card URL" copiedValue={copiedValue} onCopy={onCopy} />
+              </span>
+            ) : (
+              'Inline in the AI Catalog'
+            )
+          }
+        />
+      </TechnicalDetails>
     </EntryShell>
   );
 }
 
-function RemoteRow({ remote, copiedValue, onCopy }: { remote: RemoteEndpoint; copiedValue?: string; onCopy: CopyHandler }) {
+function RemoteRow({ remote, copiedValue, onCopy }: { remote: RemoteEndpoint } & CopyProps) {
+  const chips = [
+    ...(remote.headers ?? []).map((header) => ({
+      key: `h-${header.name}`,
+      label: header.name,
+      secret: header.isSecret,
+      note: header.isRequired ? 'required' : undefined,
+      description: header.description,
+    })),
+    ...(remote.variables ?? []).map((variable) => ({
+      key: `v-${variable.name}`,
+      label: `{${variable.name}}`,
+      secret: variable.isSecret,
+      note: variable.default ? `= ${variable.default}` : variable.isRequired ? 'required' : undefined,
+      description: variable.description,
+    })),
+  ];
+
   return (
     <li className="remote">
-      <div className="remote-head">
-        <span className="tag">{remote.type || 'unknown'}</span>
-        {remote.url ? <CopyButton value={remote.url} label="remote URL" copiedValue={copiedValue} onCopy={onCopy} /> : null}
+      <div className="remote-line">
+        <span className="tag">{transportLabel(remote.type)}</span>
+        <code title={remote.url}>{remote.url || 'Missing URL'}</code>
+        {remote.url ? <CopyButton value={remote.url} label="server URL" copiedValue={copiedValue} onCopy={onCopy} /> : null}
       </div>
-      <code className="remote-url">{remote.url || 'Missing URL'}</code>
-      {remote.supportedProtocolVersions?.length ? (
-        <p className="remote-meta">Protocol {remote.supportedProtocolVersions.join(', ')}</p>
-      ) : null}
-      {remote.headers?.length || remote.variables?.length ? (
+      {chips.length ? (
         <div className="chip-row">
-          {remote.headers?.map((header) => (
-            <span className="chip" key={`h-${header.name}`} title={header.description}>
-              {header.isSecret ? <Lock aria-label="Secret" size={11} /> : null}
-              {header.name}
-              {header.isRequired ? <span className="chip-note">required</span> : null}
-            </span>
-          ))}
-          {remote.variables?.map((variable) => (
-            <span className="chip" key={`v-${variable.name}`} title={variable.description}>
-              {variable.isSecret ? <Lock aria-label="Secret" size={11} /> : null}
-              {`{${variable.name}}`}
-              {variable.isRequired ? <span className="chip-note">required</span> : null}
-              {variable.default ? <span className="chip-note">= {variable.default}</span> : null}
+          {chips.map((chip) => (
+            <span className="chip" key={chip.key} title={chip.description}>
+              {chip.secret ? <Lock aria-label="Secret" size={11} /> : null}
+              {chip.label}
+              {chip.note ? <span className="chip-note">{chip.note}</span> : null}
             </span>
           ))}
         </div>
@@ -420,20 +438,27 @@ function RemoteRow({ remote, copiedValue, onCopy }: { remote: RemoteEndpoint; co
   );
 }
 
-function OtherEntry({ entry, copiedValue, onCopy }: EntryProps) {
+function OtherEntry({ entry, copiedValue, onCopy }: { entry: CatalogEntry } & CopyProps) {
   const href = getHttpUrl(entry.sourceUrl);
   const tone = entry.errorMessage ? 'error' : entry.warnings.length ? 'warning' : undefined;
 
   return (
     <EntryShell
-      avatar={<Avatar Icon={artifactIcon(entry.type)} />}
       title={entry.displayName || identifierLabel(entry.identifier) || entry.type}
-      meta={joinMeta([artifactLabel(entry.type), entry.version ? `v${entry.version}` : undefined, entry.inline ? 'inline' : undefined])}
+      meta={joinMeta([artifactLabel(entry.type), entry.version ? `v${entry.version}` : undefined])}
       tone={tone}
     >
       {entry.description ? <p className="description">{entry.description}</p> : null}
       {entry.errorMessage ? <p className="entry-error">{entry.errorMessage}</p> : null}
-      <dl className="facts">
+      {href ? (
+        <div className="action-row">
+          <a className="text-link" href={href} target="_blank" rel="noreferrer">
+            <ExternalLink aria-hidden size={13} />
+            Open
+          </a>
+        </div>
+      ) : null}
+      <TechnicalDetails warnings={entry.warnings}>
         {entry.identifier ? <Fact label="ID" value={<code>{entry.identifier}</code>} /> : null}
         <Fact label="Type" value={<code>{entry.type}</code>} />
         <Fact
@@ -443,26 +468,20 @@ function OtherEntry({ entry, copiedValue, onCopy }: EntryProps) {
               <span className="copy-line">
                 <code>{entry.sourceUrl}</code>
                 <CopyButton value={entry.sourceUrl} label="artifact URL" copiedValue={copiedValue} onCopy={onCopy} />
-                {href ? <LinkButton href={href} label="Open artifact" /> : null}
               </span>
             ) : (
               'Inline in the AI Catalog'
             )
           }
         />
-      </dl>
-      {entry.warnings.length ? <WarningList warnings={entry.warnings} /> : null}
+      </TechnicalDetails>
     </EntryShell>
   );
 }
 
-function Avatar({ src, Icon }: { src?: string; Icon: LucideIcon }) {
+function ServerIcon({ src }: { src: string }) {
   const [failed, setFailed] = useState(false);
-  return (
-    <span className="avatar">
-      {src && !failed ? <img src={src} alt="" onError={() => setFailed(true)} /> : <Icon aria-hidden size={16} />}
-    </span>
-  );
+  return failed ? null : <img className="server-icon" src={src} alt="" onError={() => setFailed(true)} />;
 }
 
 function Fact({ label, value }: { label: string; value: ReactNode }) {
@@ -474,7 +493,7 @@ function Fact({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
-function WarningList({ warnings }: { warnings: { code: string; message: string }[] }) {
+function WarningList({ warnings }: { warnings: ScanWarning[] }) {
   return (
     <ul className="warning-list">
       {warnings.map((warning, index) => (
@@ -487,14 +506,7 @@ function WarningList({ warnings }: { warnings: { code: string; message: string }
   );
 }
 
-interface CopyButtonProps {
-  value: string;
-  label: string;
-  copiedValue?: string;
-  onCopy: CopyHandler;
-}
-
-function CopyButton({ value, label, copiedValue, onCopy }: CopyButtonProps) {
+function CopyButton({ value, label, copiedValue, onCopy }: { value: string; label: string } & CopyProps) {
   const copied = copiedValue === value;
   const text = copied ? `Copied ${label}` : `Copy ${label}`;
   return (
@@ -521,26 +533,15 @@ function LinkButton({ href, label }: { href: string; label: string }) {
 interface StatusView {
   label: string;
   description: (result: ScanResult) => string;
-  tone: 'ok' | 'warning' | 'neutral' | 'error';
+  tone: 'warning' | 'neutral' | 'error';
   Icon: LucideIcon;
-}
-
-function catalogSummary(result: ScanResult): string {
-  const mcp = result.entries.filter((entry) => entry.type === SERVER_CARD_MEDIA_TYPE).length;
-  const other = result.entries.length - mcp;
-  if (!mcp && !other) return 'The catalog has no entries.';
-  return joinMeta([
-    mcp ? pluralize(mcp, 'MCP server') : 'No MCP servers',
-    other ? pluralize(other, mcp ? 'other artifact' : 'artifact') : undefined,
-  ]);
 }
 
 function getStatusView(result: ScanResult): StatusView {
   switch (result.status as ScanStatus) {
     case 'found':
-      return { label: 'AI Catalog found', description: catalogSummary, tone: 'ok', Icon: CheckCircle2 };
     case 'found-with-warnings':
-      return { label: 'Found, with warnings', description: catalogSummary, tone: 'warning', Icon: ShieldAlert };
+      return { label: 'Empty catalog', description: () => 'The AI Catalog has no entries.', tone: 'neutral', Icon: SearchX };
     case 'not-found':
       return {
         label: 'No AI Catalog',
@@ -588,15 +589,6 @@ function getStatusView(result: ScanResult): StatusView {
   }
 }
 
-function artifactIcon(type: string): LucideIcon {
-  if (type.includes('agent-card')) return Bot;
-  if (type.includes('agent-skills')) return Wrench;
-  if (type.includes('agent-plugins')) return Puzzle;
-  if (type.includes('ai-catalog')) return Library;
-  if (type.includes('markdown') || type.endsWith('+md')) return BookOpen;
-  return FileBraces;
-}
-
 function joinMeta(parts: (string | undefined)[]): string {
   return parts.filter(Boolean).join(' · ');
 }
@@ -619,8 +611,7 @@ function getHost(value: string | undefined): string | undefined {
   }
 }
 
-function splitUrl(value: string | undefined): { origin: string; rest: string } | undefined {
-  if (!value) return undefined;
+function splitUrl(value: string): { origin: string; rest: string } | undefined {
   try {
     const url = new URL(value);
     return { origin: url.host, rest: value.slice(value.indexOf(url.host) + url.host.length) };
