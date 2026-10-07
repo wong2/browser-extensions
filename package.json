@@ -8,11 +8,13 @@
     "dev:redirector": "bun --filter redirector dev",
     "dev:crt": "bun --filter crt dev",
     "dev:webmcp-radar": "bun --filter webmcp-radar dev",
+    "dev:ai-catalog-detector": "bun --filter ai-catalog-detector dev",
     "build:cf-cache-purge": "bun --filter cf-cache-purge build",
     "build:hn-jump": "bun --filter hn-jump build",
     "build:redirector": "bun --filter redirector build",
     "build:crt": "bun --filter crt build",
     "build:webmcp-radar": "bun --filter webmcp-radar build",
+    "build:ai-catalog-detector": "bun --filter ai-catalog-detector build",
     "build": "bun --filter '*' build"
   }
 }

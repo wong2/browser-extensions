@@ -11,6 +11,7 @@ A monorepo for my browser extensions, built with [WXT](https://wxt.dev/), TypeSc
 | [redirector](packages/redirector) | Redirect URLs based on custom rules |
 | [crt](packages/crt) | List subdomains from Certificate Transparency logs |
 | [webmcp-radar](packages/webmcp-radar) | Discover WebMCP tools as you browse and keep a local detection history |
+| [ai-catalog-detector](packages/ai-catalog-detector) | Discover the AI Catalog advertised by the current website |
 
 ## Development
 
@@ -26,6 +27,7 @@ bun run dev:cf-cache-purge
 bun run dev:redirector
 bun run dev:crt
 bun run dev:webmcp-radar
+bun run dev:ai-catalog-detector
 
 # Build all extensions
 bun run build
@@ -36,6 +38,7 @@ bun run build:cf-cache-purge
 bun run build:redirector
 bun run build:crt
 bun run build:webmcp-radar
+bun run build:ai-catalog-detector
 ```
 
 ## Project Structure
@@ -46,5 +49,6 @@ packages/
 ├── hn-jump/        # HN Jump extension
 ├── redirector/    # Redirector extension
 ├── crt/           # CRT subdomain lookup
-└── webmcp-radar/  # WebMCP tool radar and local discovery history
+├── webmcp-radar/  # WebMCP tool radar and local discovery history
+└── ai-catalog-detector/ # AI Catalog discovery
 ```
