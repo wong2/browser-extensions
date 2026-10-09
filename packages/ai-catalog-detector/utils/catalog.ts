@@ -2,6 +2,7 @@ import {
   MAX_CATALOG_ENTRIES,
   SERVER_CARD_MEDIA_TYPE,
   type CatalogEntry,
+  type RemoteEndpoint,
   type CatalogHost,
   type ScanWarning,
 } from './types';
@@ -211,4 +212,14 @@ function isHttpUrl(value: string): boolean {
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+export function transportLabel(type: string | undefined): string {
+  if (type === 'streamable-http' || type === 'http') return 'HTTP';
+  if (type === 'sse') return 'SSE';
+  return type || 'Unknown transport';
+}
+
+export function requiresAuth(remote: RemoteEndpoint): boolean {
+  return Boolean(remote.headers?.some((header) => header.isRequired || header.isSecret));
 }

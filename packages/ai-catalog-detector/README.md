@@ -1,6 +1,6 @@
 # AI Catalog
 
-Discovers the AI Catalog advertised by the active website at `/.well-known/ai-catalog.json`. The popup lists every catalog entry. MCP Server Cards are fetched and shown with their identity, version, and transport endpoints. Each server offers a **Copy config** button that produces an `mcpServers` entry (with placeholders for required headers) for Cursor, Claude Code, and similar clients. Other artifact types are listed from the catalog entry itself — name, type, and link — until those formats get their own detail views.
+Discovers the AI Catalog advertised by the active website at `/.well-known/ai-catalog.json`. The popup lists every catalog entry. MCP Server Cards are fetched and shown with their identity, version, and transport endpoints. Other artifact types are listed from the catalog entry itself — name, type, and link — until those formats get their own detail views.
 
 The toolbar badge shows how many entries the catalog contains. Discovery metadata is public: the extension does not connect to MCP, call tools, collect credentials, or inspect page content. Secret header values on Server Cards are dropped before anything is shown or cached.
 

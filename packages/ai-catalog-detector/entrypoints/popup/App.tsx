@@ -15,8 +15,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Children, useEffect, useState, type ReactNode } from 'react';
-import { artifactLabel, identifierLabel } from '@/utils/catalog';
-import { clientConfig, preferredRemote, requiresAuth, transportLabel } from '@/utils/client-config';
+import { artifactLabel, identifierLabel, requiresAuth, transportLabel } from '@/utils/catalog';
 import {
   SERVER_CARD_MEDIA_TYPE,
   type CatalogEntry,
@@ -310,9 +309,6 @@ function ServerEntry({ entry, defaultOpen, copiedValue, onCopy }: { entry: Catal
   const repositoryHref = getHttpUrl(serverCard?.repository?.url);
   const description = entry.description || serverCard?.description;
   const remotes = serverCard?.remotes ?? [];
-  const primary = preferredRemote(remotes);
-  const config = clientConfig(entry);
-  const configCopied = Boolean(config && copiedValue === config);
   const protocols = [...new Set(remotes.flatMap((remote) => remote.supportedProtocolVersions ?? []))].sort().reverse();
   const title =
     entry.displayName || serverCard?.title || serverCard?.name || identifierLabel(entry.identifier) || 'Unnamed server';
@@ -320,7 +316,7 @@ function ServerEntry({ entry, defaultOpen, copiedValue, onCopy }: { entry: Catal
 
   const meta = entry.errorMessage
     ? 'Server Card unavailable'
-    : primary
+    : remotes.length
       ? joinMeta([
           [...new Set(remotes.map((remote) => transportLabel(remote.type)))].join(' / '),
           remotes.some(requiresAuth) ? 'Auth required' : undefined,
@@ -347,19 +343,8 @@ function ServerEntry({ entry, defaultOpen, copiedValue, onCopy }: { entry: Catal
         </ul>
       ) : null}
 
-      {config || websiteHref || repositoryHref ? (
+      {websiteHref || repositoryHref ? (
         <div className="action-row">
-          {config ? (
-            <button
-              className={`primary-button${configCopied ? ' is-copied' : ''}`}
-              type="button"
-              title="Copy an mcpServers entry for Cursor, Claude Code and other MCP clients"
-              onClick={() => void onCopy(config)}
-            >
-              {configCopied ? <Check aria-hidden size={13} /> : <Copy aria-hidden size={13} />}
-              {configCopied ? 'Copied' : 'Copy config'}
-            </button>
-          ) : null}
           {websiteHref ? (
             <a className="text-link" href={websiteHref} target="_blank" rel="noreferrer">
               <Globe aria-hidden size={13} />
